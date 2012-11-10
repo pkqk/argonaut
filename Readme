@@ -1,0 +1,5 @@
+A basic little app to run on heroku
+
+take kml files such as those form google maps and return a json version of the data
+
+Currently probably only does points, I don't know what else kml supports.
