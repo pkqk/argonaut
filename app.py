@@ -4,7 +4,7 @@ from flask import Flask, request, make_response
 import geojson
 
 app = Flask(__name__)
-app.debug = True
+app.debug = os.environ.get('DEBUG', 'False') == 'True'
 
 @app.route('/')
 def home():
