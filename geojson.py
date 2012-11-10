@@ -45,7 +45,16 @@ class KMLHandler(xml.sax.ContentHandler):
         place, self.placemark = self.placemark, None
         style_url = self.styles[place.pop('styleUrl').replace('#', '')]
         place['icon'] = style_url
+        self.extract_coordinates(place)
         self.placemarks.append(place)
+
+    def extract_coordinates(self, place):
+        lon, lat, alt = place['coordinates'].split(',')
+        place.update({
+            'latitude': lat,
+            'longitude': lon,
+            'altitude': alt
+        })
 
     def to_json(self):
         return json.dumps({'placemarks': self.placemarks})
