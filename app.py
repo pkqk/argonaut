@@ -8,7 +8,7 @@ app.debug = os.environ.get('DEBUG', 'False') == 'True'
 
 @app.route('/')
 def home():
-    return 'filler'
+    return "", 204
 
 @app.route('/kml.jsonp')
 def kml():
