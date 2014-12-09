@@ -43,8 +43,7 @@ class KMLHandler(xml.sax.ContentHandler):
 
     def save_placemark(self):
         place, self.placemark = self.placemark, None
-        style_url = self.styles[place.pop('styleUrl').replace('#', '')]
-        place['icon'] = style_url
+        place['style'] = place.pop('styleUrl').replace('#', '')
         self.extract_coordinates(place)
         self.placemarks.append(place)
 
@@ -57,7 +56,7 @@ class KMLHandler(xml.sax.ContentHandler):
         })
 
     def to_json(self):
-        return json.dumps({'placemarks': self.placemarks})
+        return json.dumps({'placemarks': self.placemarks, 'styles': self.styles})
 
 def kml_json(stream):
     handler = KMLHandler()
