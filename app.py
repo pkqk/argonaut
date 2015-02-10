@@ -1,7 +1,6 @@
 import os
-from urllib import urlopen
 from flask import Flask, request, make_response
-import geojson
+from geojson import GoogleMapLayer
 
 app = Flask(__name__)
 app.debug = os.environ.get('DEBUG', 'False') == 'True'
@@ -13,8 +12,8 @@ def home():
 @app.route('/kml.jsonp')
 def kml():
     callback = request.args.get('callback')
-    map = request.args.get('map')
-    response = make_response("%s(%s)" % (callback, geojson.kml_json(urlopen(map))))
+    map = GoogleMapLayer(request.args.get('map'))
+    response = make_response("%s(%s)" % (callback, map.to_json()))
     response.headers['Content-Type'] = 'application/javascript'
     return response
 

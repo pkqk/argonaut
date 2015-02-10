@@ -4,6 +4,9 @@ from __future__ import unicode_literals, print_function, division
 import sys
 import xml.sax
 import json
+from zipfile import ZipFile
+from StringIO import StringIO
+from urllib import urlopen
 from collections import defaultdict
 
 class KMLHandler(xml.sax.ContentHandler):
@@ -58,10 +61,19 @@ class KMLHandler(xml.sax.ContentHandler):
     def to_json(self):
         return json.dumps({'placemarks': self.placemarks, 'styles': self.styles})
 
-def kml_json(stream):
-    handler = KMLHandler()
-    xml.sax.parse(stream, handler)
-    return handler.to_json()
+
+class GoogleMapLayer(object):
+
+    def __init__(self, url):
+        kmz = ZipFile(StringIO(urlopen(url).read()))
+        filename = kmz.namelist()[0]
+        self.handler = KMLHandler()
+        xml.sax.parse(kmz.open(filename), self.handler)
+
+    def to_json(self):
+        return self.handler.to_json()
+
 
 if __name__ == "__main__":
-    print(kml_json(open(sys.argv[1])))
+    map = GoogleMapLayer(sys.argv[1])
+    print(map.to_json())
