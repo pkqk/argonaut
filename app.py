@@ -12,8 +12,15 @@ def home():
 @app.route('/kml.jsonp')
 def kml():
     callback = request.args.get('callback')
-    map = GoogleMapLayer(request.args.get('map'))
-    response = make_response("%s(%s)" % (callback, map.to_json()))
+    errorback = request.args.get('errorback')
+    try:
+        map = GoogleMapLayer(request.args.get('map'))
+        response = make_response("%s(%s)" % (callback, map.to_json()))
+    except:
+        if errorback:
+            response = make_response("%s()" % (errorback))
+        else:
+            raise
     response.headers['Content-Type'] = 'application/javascript'
     return response
 
